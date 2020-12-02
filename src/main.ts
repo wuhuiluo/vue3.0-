@@ -1,44 +1,9 @@
 import { createApp } from 'vue'
-import { createStore } from 'vuex'
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from './views/Home.vue'
-import Login from './views/Login.vue'
-import columndetail from './views/ColumnDetail.vue'
+import router from './router'
+import store from './store'
 import App from './App.vue'
-const store = createStore({
-    state: {
-        count: 0
-    },
-    mutations: {
-        add(state) {
-            state.count++
-        }
-    }
-})
-console.log('store:count', store.state.count);
-store.commit('add')
-console.log(store.state.count);
-const routerHistory = createWebHistory()
-const router = createRouter({
-    history: routerHistory,
-    routes: [
-        {
-            path: '/',
-            name: 'home',
-            component: Home
-        },
-        {
-            path: '/login',
-            name: 'login',
-            component: Login
-        },
-        {
-            path: '/column/:id',
-            name: 'column',
-            component: columndetail
-        }
-    ]
-})
+
 const app = createApp(App)
+app.use(store)
 app.use(router)
 app.mount('#app')

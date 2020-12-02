@@ -19,23 +19,28 @@
 
 
 <script lang="ts">
+import { useStore } from "vuex";
+import { GlobalDataProps } from "../store";
 import PostList from "../components/PostList.vue";
-import { testData, testPosts } from "../hooks/testData";
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 export default defineComponent({
-  components: { PostList },
+  components: {
+    PostList,
+  },
   setup() {
+    const store = useStore<GlobalDataProps>();
     const route = useRoute();
     const currentId = +route.params.id;
-    const column = testData.find((column) => column.id === currentId);
-    const post = testPosts.filter((post) => post.columnId === currentId);
-    console.log(post);
-    console.log(column);
+    const column = computed(() => store.getters.getColumnById(currentId));
+    const post = computed(() => store.getters.getPostByCid(currentId));
+
+    // const post = testPosts.filter((post) => post.columnId === currentId);
+    // console.log(post);
+    // console.log(column);
     return {
       column,
       post,
-      route,
     };
     components: {
       PostList;

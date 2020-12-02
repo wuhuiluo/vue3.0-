@@ -25,6 +25,8 @@
   </validate-form>
 </template>
 <script lang="ts">
+import { useStore } from "vuex";
+import { GlobalDataProps } from "../store";
 import { useRouter } from "vue-router";
 import { defineComponent, ref } from "vue";
 import ValidateForm from "../components/ValidateForm.vue";
@@ -36,7 +38,8 @@ export default defineComponent({
     ValidateInput,
   },
   setup() {
-    const router = useRouter()
+    const store = useStore<GlobalDataProps>();
+    const router = useRouter();
     console.log(router);
     const emailValue = ref("wuhuiluo");
     const passwordValue = ref("wuhuiluo1A");
@@ -49,8 +52,12 @@ export default defineComponent({
     ];
     const onFormSubmit = (result: boolean) => {
       // console.log("submitForm的返回结果:", result);
-      if(result) {
-        router.push({name: 'column', params: {id: 1} })
+      if (result) {
+        router.push("/");
+        store.commit("login");
+        console.log(store.state.user.isLogin);
+        console.log(store.state.user.name);
+        // router.push({name: 'column', params: {id: 1} })
       }
     };
     return {

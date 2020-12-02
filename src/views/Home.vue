@@ -1,5 +1,6 @@
 <template>
   <div class="home-page">
+    <h1>{{ columnLenght }}</h1>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
@@ -16,47 +17,24 @@
   </div>
 </template>
 <script lang="ts">
-import ColumnList, { ColumnProps } from "../components/ColumnList.vue";
-const testData: ColumnProps[] = [
-  {
-    id: 1,
-    title: "test1的专栏",
-    description: "123456",
-    avatar:
-      "http://p1.music.126.net/_XO81VG4q6Ssq-ByQ27j-g==/109951164436342667.jpg",
-  },
-  {
-    id: 2,
-    title: "test1的专栏",
-    description: "123456",
-    avatar:
-      "http://p1.music.126.net/_XO81VG4q6Ssq-ByQ27j-g==/109951164436342667.jpg",
-  },
-  {
-    id: 3,
-    title: "test1的专栏",
-    description: "123456",
-    avatar:
-      "http://p1.music.126.net/_XO81VG4q6Ssq-ByQ27j-g==/109951164436342667.jpg",
-  },
-  {
-    id: 4,
-    title: "test1的专栏",
-    description: "123456",
-    avatar:
-      "http://p1.music.126.net/_XO81VG4q6Ssq-ByQ27j-g==/109951164436342667.jpg",
-  }
-];
-import { defineComponent } from "vue";
+import { GlobalDataProps } from "../store";
+import { useStore } from "vuex";
+import ColumnList from "../components/ColumnList.vue";
+import { defineComponent, computed } from "vue";
 export default defineComponent({
-  name: 'Home',
+  name: "Home",
   components: {
-    ColumnList
+    ColumnList,
   },
   setup() {
+    const store = useStore<GlobalDataProps>();
+    const list = computed(() => store.state.columns);
+    const columnLenght = computed(() => store.getters.getLength);
+    console.log(columnLenght.value);
     return {
-      list: testData
-    }
-  }
-})
+      list,
+      columnLenght,
+    };
+  },
+});
 </script>

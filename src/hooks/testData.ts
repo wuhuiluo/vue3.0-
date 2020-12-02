@@ -52,11 +52,11 @@ export const testPosts: PostPros[] = [
         columnId: 1
     },
     {
-        id: 1,
+        id: 2,
         title: '这是我的第一篇文章',
         content: '"this is a new post you very will need"',
         image: "http://p1.music.126.net/_XO81VG4q6Ssq-ByQ27j-g==/109951164436342667.jpg",
         createAt: '2020-06-11 10:34:22',
-        columnId: 2
+        columnId: 1
     }
 ]
