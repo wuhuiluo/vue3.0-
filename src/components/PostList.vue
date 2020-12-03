@@ -17,14 +17,14 @@
 
 
 <script lang="ts">
-import { PostPros } from "../hooks/testData";
+import { PostProps } from "../hooks/testData";
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   name: "PostList",
   props: {
     list: {
-      type: Array as PropType<PostPros[]>,
+      type: Array as PropType<PostProps[]>,
       required: true
     },
   },

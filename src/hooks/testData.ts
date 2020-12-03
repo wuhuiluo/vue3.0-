@@ -1,4 +1,4 @@
-export interface PostPros {
+export interface PostProps {
     id: number;
     title: string;
     content: string;
@@ -42,7 +42,7 @@ export const testData: ColumnProps[] = [
         "http://p1.music.126.net/_XO81VG4q6Ssq-ByQ27j-g==/109951164436342667.jpg",
     }
   ];
-export const testPosts: PostPros[] = [
+export const testPosts: PostProps[] = [
     {
         id: 1,
         title: '这是我的第一篇文章',
