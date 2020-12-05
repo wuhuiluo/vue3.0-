@@ -1,7 +1,11 @@
 <template>
   <div class="container">
+    <loading
+      v-if="isLoading"
+      text="努力加载中"
+      background="rgba(0,0,0,0.8)"
+    ></loading>
     <global-header :user="user"></global-header>
-    <h1 v-if="isLoading">正在加载中😄</h1>
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
@@ -18,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import Loading from "./components/Loading.vue";
 import { useStore } from "vuex";
 import { defineComponent, reactive, ref, computed } from "vue";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -27,11 +32,12 @@ export default defineComponent({
   name: "App",
   components: {
     GlobalHeader,
+    Loading,
   },
   setup() {
     const store = useStore();
     const user = computed(() => store.state.user);
-    const isLoading = computed(() => store.state.loading )
+    const isLoading = computed(() => store.state.loading);
     return {
       isLoading,
       user,
