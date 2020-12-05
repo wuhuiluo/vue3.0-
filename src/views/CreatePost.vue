@@ -34,7 +34,7 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { PostProps } from "../hooks/testData";
+import { PostProps } from "../store";
 import { GlobalDataProps } from "../store";
 import ValidateForm from "../components/ValidateForm.vue";
 import ValidateInput, { RulesProp } from "../components/ValidateInput.vue";
@@ -58,15 +58,15 @@ export default defineComponent({
       if (result) {
         const { columnId } = store.state.user;
         if (columnId) {
-          const post: PostProps = {
-            id: new Date().getTime(),
-            title: titleValue.value,
-            content: contentValue.value,
-            columnId,
-            createAt: new Date().toLocaleString(),
-          };
-          store.commit("createPost", post);
-          router.push({ name: "column", params: { id: columnId } });
+          // const post: PostProps = {
+          //   _id: new Date().getTime(),
+          //   title: titleValue.value,
+          //   content: contentValue.value,
+          //   columnId,
+          //   createAt: new Date().toLocaleString(),
+          // };
+          // store.commit("createPost", post);
+          // router.push({ name: "column", params: { id: columnId } });
         }
       }
     };

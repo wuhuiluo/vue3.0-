@@ -40,7 +40,7 @@ export default defineComponent({
   setup() {
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
-    console.log(router);
+    // console.log(router);
     const emailValue = ref("wuhuiluo");
     const passwordValue = ref("wuhuiluo1A");
     const passwordRules: RulesProp = [

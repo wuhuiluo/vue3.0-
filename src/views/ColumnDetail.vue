@@ -3,8 +3,8 @@
     <div class="column-info row mb-4 border-bottom pb-4 align-items center">
       <div class="col-3 text-center">
         <img
-          :src="column.avatar"
-          class="rounded-circle border"
+          src="http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f3e41a8b7d9c60b68cdd1ec.jpg"
+          class="rounded-circle border w-100"
           :alt="column.title"
         />
       </div>
@@ -22,7 +22,7 @@
 import { useStore } from "vuex";
 import { GlobalDataProps } from "../store";
 import PostList from "../components/PostList.vue";
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 export default defineComponent({
   components: {
@@ -31,13 +31,16 @@ export default defineComponent({
   setup() {
     const store = useStore<GlobalDataProps>();
     const route = useRoute();
-    const currentId = +route.params.id;
+    const currentId = route.params.id;
+    onMounted(() => {
+      store.dispatch("fetchColumn", currentId);
+      store.dispatch("fetchPosts", currentId);
+    });
     const column = computed(() => store.getters.getColumnById(currentId));
     const post = computed(() => store.getters.getPostByCid(currentId));
-
-    // const post = testPosts.filter((post) => post.columnId === currentId);
-    // console.log(post);
-    // console.log(column);
+    // const list = computed(() => store.state.posts)
+    console.log(column.value);
+    console.log(post);
     return {
       column,
       post,
