@@ -53,10 +53,17 @@ export default defineComponent({
     const onFormSubmit = (result: boolean) => {
       // console.log("submitForm的返回结果:", result);
       if (result) {
-        router.push("/");
-        store.commit("login");
-        console.log(store.state.user.isLogin);
-        console.log(store.state.user.name);
+        const payload = {
+          email: emailValue.value,
+          password: passwordValue.value,
+        };
+        store.dispatch("loginAndFetch", payload).then((res) => {
+          console.log(res);
+          router.push("/");
+        });
+        // store.commit("login");
+        // console.log(store.state.user.isLogin);
+        // console.log(store.state.user.name);
         // router.push({name: 'column', params: {id: 1} })
       }
     };

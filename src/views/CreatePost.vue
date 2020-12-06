@@ -56,8 +56,8 @@ export default defineComponent({
     const router = useRouter();
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        const { columnId } = store.state.user;
-        if (columnId) {
+        const { column } = store.state.user;
+        if (column) {
           // const post: PostProps = {
           //   _id: new Date().getTime(),
           //   title: titleValue.value,

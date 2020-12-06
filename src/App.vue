@@ -3,7 +3,6 @@
     <loading
       v-if="isLoading"
       text="努力加载中"
-      background="rgba(0,0,0,0.8)"
     ></loading>
     <global-header :user="user"></global-header>
     <router-view></router-view>
@@ -26,7 +25,7 @@ import Loading from "./components/Loading.vue";
 import { useStore } from "vuex";
 import { defineComponent, reactive, ref, computed } from "vue";
 import "bootstrap/dist/css/bootstrap.min.css";
-import GlobalHeader, { UserProps } from "./components/GlobalHeader.vue";
+import GlobalHeader from "./components/GlobalHeader.vue";
 
 export default defineComponent({
   name: "App",
