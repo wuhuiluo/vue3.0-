@@ -25,6 +25,7 @@
   </validate-form>
 </template>
 <script lang="ts">
+import createMessage from "../hooks/createMessage";
 import { useStore } from "vuex";
 import { GlobalDataProps } from "../store";
 import { useRouter } from "vue-router";
@@ -41,8 +42,8 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
     // console.log(router);
-    const emailValue = ref("wuhuiluo");
-    const passwordValue = ref("wuhuiluo1A");
+    const emailValue = ref("51042634@qq.com");
+    const passwordValue = ref("123456");
     const passwordRules: RulesProp = [
       { type: "required", message: "密码不能为空" },
     ];
@@ -57,10 +58,18 @@ export default defineComponent({
           email: emailValue.value,
           password: passwordValue.value,
         };
-        store.dispatch("loginAndFetch", payload).then((res) => {
-          console.log(res);
-          router.push("/");
-        });
+        store
+          .dispatch("loginAndFetch", payload)
+          .then((res) => {
+            // console.log(res);
+            createMessage("登陆成功 2秒后跳转到首页", "success");
+            setTimeout(() => {
+              router.push("/");
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+          });
         // store.commit("login");
         // console.log(store.state.user.isLogin);
         // console.log(store.state.user.name);

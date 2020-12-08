@@ -8,7 +8,7 @@
         >
       </li>
       <li class="list-inline-item">
-        <router-link to="/login" class="btn btn-outline-light my-2"
+        <router-link to="/register" class="btn btn-outline-light my-2"
           >注册</router-link
         >
       </li>

@@ -1,5 +1,10 @@
 import axios from 'axios';
 import { createStore, Commit } from 'vuex';
+export interface ResponseType<P = {}> {
+    code: number;
+    msg: string;
+    data: P
+}
 export interface UserProps {
     isLogin: boolean;
     nickName?: string;
@@ -7,8 +12,11 @@ export interface UserProps {
     column?: string;
     email?: string;
 }
-
-interface ImageProps {
+interface GlobalErrorProps {
+    status: boolean;
+    message?: string;
+}
+export interface ImageProps {
     _id?: string;
     url?: string;
     createdAt?: string;
@@ -42,6 +50,7 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
 }
 
 export interface GlobalDataProps {
+    error: GlobalErrorProps;
     token: string;
     loading: boolean;
     columns: ColumnProps[];
@@ -50,7 +59,10 @@ export interface GlobalDataProps {
 }
 const store = createStore<GlobalDataProps>({
     state: {
-        token: '',
+        error: {
+            status: false
+        },
+        token: localStorage.getItem('token') || '',
         loading: true,
         columns: [],
         posts: [],
@@ -79,9 +91,13 @@ const store = createStore<GlobalDataProps>({
         fetchLoading(state, status) {
             state.loading = status
         },
+        setError(state, e: GlobalErrorProps) {
+            state.error = e
+        },
         login(state, rowData) {
             const { token } = rowData.data
             state.token = token
+            localStorage.setItem('token', token)
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         },
         fetchCurrentUser(state, rawData) {
@@ -89,7 +105,7 @@ const store = createStore<GlobalDataProps>({
                 isLogin: true,
                 ...rawData.data
             }
-            console.log(state.user);
+            // console.log(state.user);
         }
     },
     actions: {

@@ -16,6 +16,7 @@
 
 
 <script>
+import useDOMCreate from "../hooks/useDOMCreate";
 import { defineComponent, onUnmounted } from "vue";
 
 export default defineComponent({
@@ -28,12 +29,13 @@ export default defineComponent({
     },
   },
   setup() {
-    const node = document.createElement("div");
-    node.id = "back";
-    document.body.appendChild(node);
-    onUnmounted(() => {
-      document.body.removeChild(node);
-    });
+    useDOMCreate("back");
+    // const node = document.createElement("div");
+    // node.id = "back";
+    // document.body.appendChild(node);
+    // onUnmounted(() => {
+    //   document.body.removeChild(node);
+    // });
   },
 });
 </script>
