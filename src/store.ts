@@ -23,13 +23,14 @@ export interface ImageProps {
 }
 
 export interface PostProps {
-    _id: string;
+    _id?: string;
     title: string;
     excerpt?: string;
     content?: string;
-    image?: ImageProps;
-    createdAt: string;
+    image?: ImageProps | string;
+    createdAt?: string;
     column: string;
+    author?: string;
 }
 export interface ColumnProps {
     _id: string;
@@ -41,6 +42,7 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
     // commit('fetchLoading',true)
     const { data } = await axios.get(url)
     commit(mutationName, data)
+    return data
     // commit('fetchLoading',false)
 }
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
@@ -77,6 +79,7 @@ const store = createStore<GlobalDataProps>({
         //     // state.user.name = "wuhuiluo"
         // },
         createPost(state, newPost) {
+            console.log(newPost);
             state.posts.push(newPost)
         },
         fetchColumns(state, rawData) {
@@ -100,36 +103,46 @@ const store = createStore<GlobalDataProps>({
             localStorage.setItem('token', token)
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         },
+        logout(state) {
+            state.token = ''
+            localStorage.removeItem('token')
+            delete axios.defaults.headers.common.Authorization
+        },
         fetchCurrentUser(state, rawData) {
+            // console.log(rawData);
             state.user = {
                 isLogin: true,
                 ...rawData.data
             }
+            // console.log(state.user.isLogin);
             // console.log(state.user);
         }
     },
     actions: {
         fetchColumns({ commit }) {
-            getAndCommit('/api/api/columns', 'fetchColumns', commit)
+            return getAndCommit('/api/api/columns', 'fetchColumns', commit)
             // const { data } = await axios.get('/api/api/columns')
             // commit('fetchColumns', data)
         },
         fetchColumn({ commit }, cid) {
-            getAndCommit(`/api/api/columns/${cid}`, 'fetchColumn', commit)
+            return getAndCommit(`/api/api/columns/${cid}`, 'fetchColumn', commit)
             // console.log(cid);
             // const { data } = await axios.get('/api/api/columns/' + cid)
             // commit('fetchColumn', data)
         },
         fetchPosts({ commit }, cid) {
-            getAndCommit(`/api/api/columns/${cid}/posts`, 'fetchPosts', commit)
+            return getAndCommit(`/api/api/columns/${cid}/posts`, 'fetchPosts', commit)
             // const { data } = await axios.get(`/api/api/columns/${cid}/posts`)
             // commit('fetchPosts', data)
         },
         fetchCurrentUser({ commit }) {
-            getAndCommit('/api/api/user/current', 'fetchCurrentUser', commit)
+            return getAndCommit('/api/api/user/current', 'fetchCurrentUser', commit)
         },
         login({ commit }, payload) {
             return postAndCommit('/api/api/user/login', 'login', commit, payload)
+        },
+        createPost({ commit }, payload) {
+            return postAndCommit('/api/api/posts', 'createPost', commit, payload)
         },
         loginAndFetch({ dispatch }, loginData) {
             return dispatch('login', loginData).then(() => {

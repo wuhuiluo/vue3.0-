@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import columndetail from './views/ColumnDetail.vue'
 import CreatePost from './views/CreatePost.vue';
+import Axios from 'axios'
 const routerHistory = createWebHistory()
 const router = createRouter({
     history: routerHistory,
@@ -32,7 +33,7 @@ const router = createRouter({
             component: () => import('./views/SignUp.vue')
         },
         {
-            path: '/CP',
+            path: '/create',
             name: 'cp',
             component: CreatePost,
             meta: {
@@ -42,12 +43,39 @@ const router = createRouter({
     ]
 })
 router.beforeEach((to, from, next) => {
-    if (to.meta.requireLogin && !store.state.user.isLogin) {
-        next({ name: 'login' })
-    } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {
-        next('/')
+    const { user, token } = store.state
+    const { requireLogin, redirectAlreadyLogin } = to.meta
+    // console.log(requireLogin);
+    // console.log(redirectAlreadyLogin);
+    // console.log(user.isLogin);
+    // console.log(token);
+    if (!user.isLogin) {
+        if (token) {
+            Axios.defaults.headers.common.Authorization = `Bearer ${token}`
+            store.dispatch('fetchCurrentUser').then(() => {
+                if (redirectAlreadyLogin) {
+                    next('/')
+                } else {
+                    next()
+                }
+            }).catch(e => {
+                console.error(e)
+                store.commit('logout')
+                next('login')
+            })
+        } else {
+            if (requireLogin) {
+                next('login')
+            } else {
+                next()
+            }
+        }
     } else {
-        next()
+        if (redirectAlreadyLogin) {
+            next('/')
+        } else {
+            next()
+        }
     }
 })
 export default router

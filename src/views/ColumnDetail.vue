@@ -9,7 +9,7 @@
         />
       </div>
       <div class="col-9">
-        <h4>{{ column.title }}</h4>
+        <h4>{{ column.title }}}</h4>
         <p class="text-muted">{{ column.description }}</p>
       </div>
     </div>
@@ -32,15 +32,16 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>();
     const route = useRoute();
     const currentId = route.params.id;
+    // const list = computed(() => store.state.posts)
+    // store.dispatch("fetchColumn", currentId);
+    // store.dispatch("fetchPosts", currentId);
     onMounted(() => {
       store.dispatch("fetchColumn", currentId);
       store.dispatch("fetchPosts", currentId);
     });
     const column = computed(() => store.getters.getColumnById(currentId));
     const post = computed(() => store.getters.getPostByCid(currentId));
-    // const list = computed(() => store.state.posts)
-    console.log(column.value);
-    console.log(post);
+    // console.log(column.value);
     return {
       column,
       post,

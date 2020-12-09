@@ -1,10 +1,20 @@
 <template>
-  <div class="file upload">
-    <button @click="triggerUpload" class="btn btn-primary">
-      <span v-if="fileStatus === 'loading'">文件上传中</span>
-      <span v-else-if="fileStatus === 'success'">上传成功</span>
-      <span v-else>点击上传</span>
-    </button>
+  <div class="file-upload">
+    <div v-bind="$attrs" @click="triggerUpload" class="file-upload-container">
+      <slot v-if="fileStatus === 'loading'" name="loading">
+        <button class="btn btn-primary">正在上传...</button>
+      </slot>
+      <slot
+        v-else-if="fileStatus === 'success'"
+        name="uploaded"
+        :uploadFile="uploadFile"
+      >
+        <button class="btn btn-primary">上传成功</button>
+      </slot>
+      <slot v-else name="default">
+        <button class="btn btn-primary">点击上传</button>
+      </slot>
+    </div>
     <input
       @change="handleFileChange"
       type="file"
@@ -31,8 +41,10 @@ export default defineComponent({
       type: Function as PropType<CheckFunction>,
     },
   },
+  inheritAttrs: false,
   emits: ["upload-success", "upload-error"],
   setup(props, context) {
+    const uploadFile = ref();
     const fileInput = ref<null | HTMLInputElement>(null);
     const fileStatus = ref<UploadStatus>("ready");
     const triggerUpload = () => {
@@ -47,7 +59,7 @@ export default defineComponent({
         const files = Array.from(currentTarget.files);
         if (props.beforeUpload) {
           const result = props.beforeUpload(files[0]);
-          console.log(result);
+          console.log(result); // 判断是不是上传对了文件 1mb jpg/png
           if (!result) {
             return;
           }
@@ -63,14 +75,15 @@ export default defineComponent({
             },
           })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
+            uploadFile.value = res.data;
             fileStatus.value = "success";
             context.emit("upload-success", res.data);
           })
           .catch((error) => {
             // console.log(e.data.message);
             fileStatus.value = "error";
-            context.emit("upload-error", error)
+            context.emit("upload-error", "上传文件错误");
           })
           .finally(() => {
             if (fileInput.value) {
@@ -85,6 +98,7 @@ export default defineComponent({
       triggerUpload,
       fileStatus,
       handleFileChange,
+      uploadFile,
     };
   },
 });
