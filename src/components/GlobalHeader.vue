@@ -1,6 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
-    <router-link to="/" class="navbar-brand">者也专栏</router-link>
+    <div class="w-75 mx-auto navbar">
+    <router-link class="navbar-brand" to="/">者也专栏</router-link>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item">
         <router-link to="/login" class="btn btn-outline-light my-2"
@@ -13,7 +14,7 @@
         >
       </li>
     </ul>
-    <ul v-else>
+    <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
         <drop-down :title="`你好 ${user.nickName}`">
           <drop-down-item
@@ -28,6 +29,7 @@
         </drop-down>
       </li>
     </ul>
+    </div>
   </nav>
 </template>
 <script lang="ts">
@@ -49,3 +51,8 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.navbar {
+  align-items: center;
+}
+</style>

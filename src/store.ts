@@ -12,16 +12,12 @@ export interface UserProps {
     column?: string;
     email?: string;
 }
-interface GlobalErrorProps {
-    status: boolean;
-    message?: string;
+export interface ColumnProps {
+    _id: string;
+    title: string;
+    avatar?: ImageProps;
+    description: string;
 }
-export interface ImageProps {
-    _id?: string;
-    url?: string;
-    createdAt?: string;
-}
-
 export interface PostProps {
     _id?: string;
     title: string;
@@ -32,12 +28,16 @@ export interface PostProps {
     column: string;
     author?: string;
 }
-export interface ColumnProps {
-    _id: string;
-    title: string;
-    avatar?: ImageProps;
-    description: string;
+export interface ImageProps {
+    _id?: string;
+    url?: string;
+    createdAt?: string;
 }
+interface GlobalErrorProps {
+    status: boolean;
+    message?: string;
+}
+
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
     // commit('fetchLoading',true)
     const { data } = await axios.get(url)
@@ -45,19 +45,19 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
     return data
     // commit('fetchLoading',false)
 }
-const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
-    const { data } = await axios.post(url, payload)
-    commit(mutationName, data)
-    return data
-}
 
 export interface GlobalDataProps {
-    error: GlobalErrorProps;
     token: string;
+    error: GlobalErrorProps;
     loading: boolean;
     columns: ColumnProps[];
     posts: PostProps[];
     user: UserProps;
+}
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+    const { data } = await axios.post(url, payload)
+    commit(mutationName, data)
+    return data
 }
 const store = createStore<GlobalDataProps>({
     state: {
@@ -65,7 +65,7 @@ const store = createStore<GlobalDataProps>({
             status: false
         },
         token: localStorage.getItem('token') || '',
-        loading: true,
+        loading: false,
         columns: [],
         posts: [],
         user: {
@@ -152,6 +152,10 @@ const store = createStore<GlobalDataProps>({
     },
     getters: {
         getColumnById: (state) => (id: string) => {
+            // console.log(id);
+            // console.log(state.columns);
+            // console.log(state.columns);
+            // console.log(state.columns.find(column => column._id === id));
             return state.columns.find(column => column._id === id)
         },
         getPostByCid: (state) => (cid: string) => {

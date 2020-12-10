@@ -1,7 +1,9 @@
 <template>
-  <div class="container">
-    <loading v-if="isLoading" text="努力加载中"></loading>
-    <global-header :user="user"></global-header>
+    <div class="container-fluid px-0 flex-shrink-0">
+      <global-header :user="user"></global-header>
+      <loading v-if="isLoading" text="努力加载中"></loading>
+    </div>
+    <div class="container">
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
@@ -14,7 +16,7 @@
         </ul>
       </small>
     </footer>
-  </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -30,7 +32,7 @@ import {
   onMounted,
   watch,
 } from "vue";
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader from "./components/GlobalHeader.vue";
 
 export default defineComponent({
@@ -91,8 +93,5 @@ export default defineComponent({
 </script>
 
 <style>
-#app {
-  margin: 0;
-  padding: 0;
-}
+
 </style>

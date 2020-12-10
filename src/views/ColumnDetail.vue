@@ -9,7 +9,7 @@
         />
       </div>
       <div class="col-9">
-        <h4>{{ column.title }}}</h4>
+        <h4>{{ column.title }}</h4>
         <p class="text-muted">{{ column.description }}</p>
       </div>
     </div>
@@ -17,12 +17,11 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import { useStore } from "vuex";
-import { GlobalDataProps } from "../store";
+import { ColumnProps, GlobalDataProps } from "../store";
 import PostList from "../components/PostList.vue";
-import { defineComponent, computed, onMounted } from "vue";
+import { defineComponent, computed, onMounted, PropType } from "vue";
 import { useRoute } from "vue-router";
 export default defineComponent({
   components: {
@@ -32,14 +31,18 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>();
     const route = useRoute();
     const currentId = route.params.id;
-    // const list = computed(() => store.state.posts)
-    // store.dispatch("fetchColumn", currentId);
-    // store.dispatch("fetchPosts", currentId);
     onMounted(() => {
       store.dispatch("fetchColumn", currentId);
       store.dispatch("fetchPosts", currentId);
-    });
-    const column = computed(() => store.getters.getColumnById(currentId));
+    })
+    // onMounted(() => {
+    //   store.dispatch('fetchColumn', currentId)
+    //   store.dispatch('fetchPosts', { columnId: currentId, pageSize: 3 })
+    // })
+    // const column = computed(() => store.getters.getColumnById(currentId))
+    // console.log(store.state.columns);
+    // const column = computed(() => {
+    const column = computed(() => store.getters.getColumnById(currentId))
     const post = computed(() => store.getters.getPostByCid(currentId));
     // console.log(column.value);
     return {
@@ -47,12 +50,10 @@ export default defineComponent({
       post,
     };
     components: {
-      PostList;
+      PostList
     }
   },
 });
 </script>
 
-
-<style>
-</style>
+<style></style>
