@@ -32,6 +32,7 @@ export interface ImageProps {
     _id?: string;
     url?: string;
     createdAt?: string;
+    fitUrl?: string;
 }
 interface GlobalErrorProps {
     status: boolean;
@@ -79,7 +80,7 @@ const store = createStore<GlobalDataProps>({
         //     // state.user.name = "wuhuiluo"
         // },
         createPost(state, newPost) {
-            console.log(newPost);
+            // console.log(newPost);
             state.posts.push(newPost)
         },
         fetchColumns(state, rawData) {

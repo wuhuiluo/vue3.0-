@@ -1,13 +1,13 @@
 <template>
   <div class="post-list">
-    <article v-for="post in list" :key="post.id" class="card mb-3 shadow-sm">
+    <article v-for="post in posts" :key="post.id" class="card mb-3 shadow-sm">
       <div class="card-body">
         <h4>{{ post.title }}</h4>
         <div class="row my-3 align-items-center">
-          <div class="col-3" v-if="post.image.url">
-            <img src="http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f3e41a8b7d9c60b68cdd1ec.jpg" :alt="post.title" class="rounded-lg w-100" />
+          <div v-if="post.image" class="col-3">
+            <img :src="post.image && post.image.fitUrl" :alt="post.title" class="rounded-lg w-100" />
           </div>
-          <p :class="{ 'col-9': post.image.url }">{{ post.excerpt }}</p>
+          <p :class="{ 'col-9': post.image }">{{ post.excerpt }}</p>
         </div>
         <span class="text-muted">{{ post.createdAt }}</span>
       </div>
@@ -17,8 +17,9 @@
 
 
 <script lang="ts">
-import { PostProps } from "../store";
-import { defineComponent, PropType } from "vue";
+import { generateFitUrl } from '../hooks/help'
+import { PostProps,ImageProps } from "../store";
+import { defineComponent, PropType,computed } from "vue";
 
 export default defineComponent({
   name: "PostList",
@@ -28,6 +29,18 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(props) {
+      const posts = computed(() => {
+          return props.list.map(post => {
+            generateFitUrl(post.image as ImageProps,200,110,['m_fill'] )
+            return post
+          })
+      })
+      // console.log(posts);
+      return {
+        posts
+      }
+  }
 });
 </script>
 
