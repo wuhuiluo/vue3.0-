@@ -1,11 +1,13 @@
 <template>
-    <div class="container-fluid px-0 flex-shrink-0">
-      <global-header :user="user"></global-header>
-      <loading v-if="isLoading" text="努力加载中"></loading>
-    </div>
-    <div class="container">
+  <div class="container-fluid px-0 flex-shrink-0">
+    <global-header :user="user"></global-header>
+    <loading v-if="isLoading" text="努力加载中"></loading>
+  </div>
+  <div class="container">
     <router-view></router-view>
-    <footer class="text-center py-4 text-secondary bg-light mt-6">
+  </div>
+  <div class="container-fluid px-0 flex-shrink-0">
+    <footer class="text-center py-4 text-secondary bg-light mt-auto">
       <small>
         <ul class="list-inline mb-0">
           <li class="list-inline-item">@ 2020 者也专栏</li>
@@ -16,7 +18,7 @@
         </ul>
       </small>
     </footer>
-    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -32,7 +34,7 @@ import {
   onMounted,
   watch,
 } from "vue";
-import 'bootstrap/dist/css/bootstrap.min.css'
+import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalHeader from "./components/GlobalHeader.vue";
 
 export default defineComponent({
@@ -93,5 +95,7 @@ export default defineComponent({
 </script>
 
 <style>
-
+a {
+  text-decoration: none;
+}
 </style>

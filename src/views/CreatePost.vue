@@ -99,7 +99,7 @@ export default defineComponent({
           }
           store.dispatch("createPost", post).then((res) => {
             setTimeout(() => {
-              console.log();
+              createMessage("发表成功,2秒后跳转到文章", "success");
               router.push({ name: "column", params: { id: column } });
             }, 2000);
           });

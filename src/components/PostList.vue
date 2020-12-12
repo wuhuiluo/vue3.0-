@@ -53,4 +53,11 @@ export default defineComponent({
 
 
 <style>
+.post-list h4 a {
+  text-decoration: none;
+  color:#1a1a1a;
+}
+.post-list h4 a:hover {
+  color:#0d6efd;
+}
 </style>

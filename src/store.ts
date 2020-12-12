@@ -115,10 +115,14 @@ const store = createStore<GlobalDataProps>({
             }
             // console.log(state.posts.data);
         },
+
         fetchPost(state, rawData) {
+            state.posts.data[rawData.data._id] = rawData.data
+            // console.log(state.posts.data);
             // console.log(rawData);
-            state.posts = rawData.data
+            // state.posts = rawData.data
         },
+
         fetchLoading(state, status) {
             state.loading = status
         },
@@ -144,6 +148,11 @@ const store = createStore<GlobalDataProps>({
             }
             // console.log(state.user.isLogin);
             // console.log(state.user);
+        },
+        createPost(state,rawData) {
+            // console.log(rawData);
+            state.posts.data[rawData._id] = rawData
+            // console.log(state.posts.data[rawData._id]);
         }
     },
     actions: {
@@ -194,7 +203,10 @@ const store = createStore<GlobalDataProps>({
         getPostByCid: (state) => (cid: string) => {
             return objToArr(state.posts.data).filter(post => post.column === cid)
             // return state.posts.filter(post => post.column === cid)
-        }
+        },
+        getCurrentPost: (state) => (cid: string) => {
+            return state.posts.data[cid]
+        } 
     }
 })
 
