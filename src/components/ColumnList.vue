@@ -34,6 +34,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    // console.log(props.list);
     const columnList = computed(() => {
       return props.list.map((column) => {
         // console.log(column);

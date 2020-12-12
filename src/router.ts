@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from './store'
+import PostDetail from './views/PostDetail.vue';
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import columndetail from './views/ColumnDetail.vue'
@@ -26,6 +27,11 @@ const router = createRouter({
             path: '/columns/:id',
             name: 'column',
             component: columndetail
+        },
+        {
+            path: '/posts/:id',
+            name: 'post',
+            component: PostDetail
         },
         {
             path: '/register',
