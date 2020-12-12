@@ -22,6 +22,7 @@
           >发表于：{{ currentPost.createdAt }}</span
         >
       </div>
+      <div v-html="currentHTML"></div>
     </article>
   </div>
 </template>
@@ -34,11 +35,14 @@ import store from "../store";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { defineComponent, onMounted, computed } from "vue";
+import MarkdownIt from "markdown-it";
 
 export default defineComponent({
   components: { UserProfile },
   name: "PostDetail",
   setup() {
+    const md = new MarkdownIt();
+    // console.log(md);
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
     const route = useRoute();
@@ -58,11 +62,22 @@ export default defineComponent({
         return null;
       }
     });
-    console.log(currentPost);
+    const currentHTML = computed(() => {
+      const { isHTML, content } = currentPost.value;
+      if (currentPost.value && content) {
+        // console.log(isHTML);
+        // console.log(content);
+        // console.log(md.render(content));
+        return isHTML ? content : md.render(content);
+      }
+    });
+    // console.log(currentHTML.value);
+    // console.log(currentPost);
     return {
       currentPost,
       currentImageUrl,
       UserProfile,
+      currentHTML,
     };
   },
 });
