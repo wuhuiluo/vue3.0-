@@ -1,28 +1,32 @@
 <template>
-  <validate-form @form-submit="onFormSubmit">
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">邮箱地址</label>
-      <validate-input
-        placeholder="请输入邮箱值"
-        type="text"
-        v-model="emailValue"
-        :rules="emailRules"
-      ></validate-input>
-    </div>
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">密码</label>
-      <validate-input
-        placeholder="请输入密码"
-        type="password"
-        v-model="passwordValue"
-        :rules="passwordRules"
-      ></validate-input>
-    </div>
-
-    <template #submit>
-      <span class="btn btn-danger">Submit</span>
-    </template>
-  </validate-form>
+  <div class="login-page mx-auto p-3 w-330">
+    <validate-form @form-submit="onFormSubmit">
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">邮箱地址</label>
+        <validate-input
+          placeholder="请输入邮箱值"
+          type="text"
+          v-model="emailValue"
+          :rules="emailRules"
+        ></validate-input>
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">密码</label>
+        <validate-input
+          placeholder="请输入密码"
+          type="password"
+          v-model="passwordValue"
+          :rules="passwordRules"
+        ></validate-input>
+      </div>
+      <div class="form-text">
+          <a href="/signup" class="">还没有账户？去注册一个新的吧！</a>
+        </div>
+      <template #submit>
+        <span class="btn btn-primary">Submit</span>
+      </template>
+    </validate-form>
+  </div>
 </template>
 <script lang="ts">
 import createMessage from "../hooks/createMessage";
@@ -39,6 +43,7 @@ export default defineComponent({
     ValidateInput,
   },
   setup() {
+    const parallax = "depth";
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
     // console.log(router);
@@ -86,3 +91,12 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.w-330 {
+  max-width: 330px;
+}
+.btn-block {
+  width: 100%;
+  display: block;
+}
+</style>

@@ -5,18 +5,16 @@
       @blur="validateInput"
       :class="{ 'is-invalid': inputRef.error }"
       class="form-control"
-      :value="inputRef.val"
+      v-model="inputRef.val"
       v-bind="$attrs"
-      @input="updateValue"
     />
     <textarea
       v-else
       @blur="validateInput"
       :class="{ 'is-invalid': inputRef.error }"
       class="form-control"
-      :value="inputRef.val"
       v-bind="$attrs"
-      @input="updateValue"
+      v-model="inputRef.val"
     ></textarea>
     <span class="invalid-feedback" v-if="inputRef.error">{{
       inputRef.message
@@ -24,7 +22,14 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, reactive, onMounted } from "vue";
+import {
+  defineComponent,
+  PropType,
+  reactive,
+  onMounted,
+  watch,
+  computed,
+} from "vue";
 import { emitter } from "./ValidateForm.vue";
 interface RuleProp {
   type: "required" | "email" | "custom";
@@ -46,15 +51,23 @@ export default defineComponent({
   inheritAttrs: false,
   setup(props, context) {
     const inputRef = reactive({
-      val: props.modelValue || "",
+      val: computed({
+        get: () => props.modelValue || "",
+        set: (val) => {
+          context.emit("update:modelValue", val);
+        },
+      }),
       error: false,
       message: "",
     });
-    const updateValue = (e: KeyboardEvent) => {
-      const targetValue = (e.target as HTMLInputElement).value;
-      inputRef.val = targetValue;
-      context.emit("update:modelValue", targetValue);
-    };
+    // watch(() => props.modelValue,(newValue) => {
+    //   inputRef.val = newValue || ''
+    // })
+    // const updateValue = (e: KeyboardEvent) => {
+    //   const targetValue = (e.target as HTMLInputElement).value;
+    //   inputRef.val = targetValue;
+    //   context.emit("update:modelValue", targetValue);
+    // };
     const validateInput = () => {
       if (props.rules) {
         const allpassed = props.rules.every((rule) => {
@@ -86,7 +99,7 @@ export default defineComponent({
     return {
       inputRef,
       validateInput,
-      updateValue,
+      // updateValue,
     };
   },
 });

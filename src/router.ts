@@ -40,7 +40,7 @@ const router = createRouter({
         },
         {
             path: '/create',
-            name: 'cp',
+            name: 'create',
             component: CreatePost,
             meta: {
                 requireLogin: true

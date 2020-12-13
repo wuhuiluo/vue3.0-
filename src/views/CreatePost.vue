@@ -1,7 +1,8 @@
 <template>
   <div class="create-post-page">
-    <h4>新建文章</h4>
+    <h4>{{ isEditMode ? "修改文章" : "新建文章" }}</h4>
     <uploader
+      :uploaded="uploadedFile"
       :beforeUpload="checkValidate"
       @upload-success="successLoad"
       action="/api/api/upload"
@@ -47,7 +48,9 @@
         ></validate-input>
       </div>
       <template #submit>
-        <button class="btn btn-primary btn-large">发表文章</button>
+        <button class="btn btn-primary btn-large">
+          {{ isEditMode ? "更新文章" : "发表文章" }}
+        </button>
       </template>
     </validate-form>
   </div>
@@ -58,8 +61,9 @@
 import axios from "axios";
 import { beforeUploadCheck } from "../hooks/help";
 import { ResponseType, ImageProps } from "../store";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { PostProps } from "../store";
 import { GlobalDataProps } from "../store";
@@ -70,6 +74,9 @@ import createMessage from "@/hooks/createMessage";
 export default defineComponent({
   name: "CreatePost",
   setup() {
+    const uploadedFile = ref();
+    const route = useRoute();
+    const isEditMode = !!route.query.id;
     let imageId = "";
     const titleRules: RulesProp = [
       {
@@ -97,11 +104,25 @@ export default defineComponent({
           if (imageId) {
             post.image = imageId;
           }
-          store.dispatch("createPost", post).then((res) => {
-            setTimeout(() => {
-              createMessage("发表成功,2秒后跳转到文章", "success");
-              router.push({ name: "column", params: { id: column } });
-            }, 2000);
+          const actionName = isEditMode ? "updatePost" : "createPost";
+          const sendData = isEditMode
+            ? {
+                id: route.query.id,
+                payload: post,
+              }
+            : post;
+          store.dispatch(actionName, sendData).then((res) => {
+            if (actionName === "updatePost") {
+              setTimeout(() => {
+                createMessage("更新文章成功,2秒后跳转到文章", "success");
+                router.push({ name: "column", params: { id: column } });
+              }, 2000);
+            } else {
+              setTimeout(() => {
+                createMessage("发表文章成功,2秒后跳转到文章", "success");
+                router.push({ name: "column", params: { id: column } });
+              }, 2000);
+            }
           });
           // store.commit("createPost", post);
           // router.push({ name: "column", params: { id: columnId } });
@@ -129,6 +150,23 @@ export default defineComponent({
       }
       return passed;
     };
+    onMounted(() => {
+      if (isEditMode) {
+        store
+          .dispatch("fetchPost", route.query.id)
+          .then((res: ResponseType<PostProps>) => {
+            const currentPost = res.data;
+            if (currentPost.image) {
+              uploadedFile.value = {
+                data: currentPost.image,
+              };
+            }
+            titleValue.value = currentPost.title;
+            contentValue.value = currentPost.content || "";
+          });
+      }
+    });
+
     // const handleFileChange = (e: Event) => {
     //   const target = e.target as HTMLInputElement;
     //   const files = target.files;
@@ -150,6 +188,7 @@ export default defineComponent({
     // };
 
     return {
+      uploadedFile,
       titleRules,
       contentRules,
       contentValue,
@@ -157,6 +196,7 @@ export default defineComponent({
       onFormSubmit,
       successLoad,
       checkValidate,
+      isEditMode,
     };
   },
   components: {

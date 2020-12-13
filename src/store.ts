@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { createStore, Commit } from 'vuex';
 import { arrToObj, objToArr } from './hooks/help'
 export interface ResponseType<P = {}> {
@@ -77,6 +77,12 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
     commit(mutationName, data)
     return data
 }
+
+const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig) => {
+    const { data } = await axios(url, config)
+    commit(mutationName, data)
+    return data
+}
 const store = createStore<GlobalDataProps>({
     state: {
         error: {
@@ -91,6 +97,10 @@ const store = createStore<GlobalDataProps>({
         }
     },
     mutations: {
+        updatePost(state, { data } ) {
+            console.log(data._id);
+            state.posts.data[data._id] = data
+        },
         fetchColumns(state, rawData) {
             // console.log(state.columns);
             const { data } = state.columns
@@ -149,13 +159,19 @@ const store = createStore<GlobalDataProps>({
             // console.log(state.user.isLogin);
             // console.log(state.user);
         },
-        createPost(state,rawData) {
+        createPost(state, rawData) {
             // console.log(rawData);
             state.posts.data[rawData._id] = rawData
             // console.log(state.posts.data[rawData._id]);
         }
     },
     actions: {
+        updatePost({ commit }, { id, payload }) {
+            return asyncAndCommit(`/api/api/posts/${id}`, 'updatePost', commit, {
+                method: 'patch',
+                data: payload
+            })
+        },
         fetchColumns({ commit }) {
             return getAndCommit('/api/api/columns', 'fetchColumns', commit)
             // const { data } = await axios.get('/api/api/columns')
@@ -206,7 +222,7 @@ const store = createStore<GlobalDataProps>({
         },
         getCurrentPost: (state) => (cid: string) => {
             return state.posts.data[cid]
-        } 
+        }
     }
 })
 

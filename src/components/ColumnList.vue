@@ -4,7 +4,7 @@
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
           <img
-            :src="column.avatar && column.avatar.url"
+            :src="column.avatar && column.avatar.fitUrl"
             class="rounded-circle border border-light my-3"
             :alt="column.title"
           />
@@ -23,6 +23,7 @@
   </div>
 </template>
 <script lang="ts">
+import { addColumnAvatar } from "../hooks/help";
 import { defineComponent, PropType, computed } from "vue";
 import { ColumnProps } from "../store";
 export default defineComponent({
@@ -38,11 +39,7 @@ export default defineComponent({
     const columnList = computed(() => {
       return props.list.map((column) => {
         // console.log(column);
-        if (!column.avatar) {
-          column.avatar = {
-            url: require("../assets/avatar.jpg"),
-          };
-        }
+        addColumnAvatar(column,50,50)
         // console.log(column);
         return column;
       });

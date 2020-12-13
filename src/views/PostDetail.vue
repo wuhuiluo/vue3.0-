@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentPost" class="post-detail-page w-690">
+  <div v-if="currentPost" class="modify-height post-detail-page w-690">
     <article class="mb-5 pb-3">
       <img
         class="rounded-lg img-fluid my-4"
@@ -23,12 +23,23 @@
         >
       </div>
       <div v-html="currentHTML"></div>
+      <div v-if="showEditArea" class="btn-group mt-5">
+        <router-link
+          type="button"
+          class="btn btn-success"
+          :to="{ name: 'create', query: { id: currentPost._id } }"
+          >编辑</router-link
+        >
+        <button type="button" class="btn btn-danger">删除</button>
+      </div>
     </article>
   </div>
 </template>
 
 
 <script lang="ts">
+import Modal from "../components/Modeal.vue";
+import { UserProps } from "../store";
 import UserProfile from "../components/UserProfile.vue";
 import { ColumnProps, GlobalDataProps, ImageProps, PostProps } from "../store";
 import store from "../store";
@@ -38,7 +49,7 @@ import { defineComponent, onMounted, computed } from "vue";
 import MarkdownIt from "markdown-it";
 
 export default defineComponent({
-  components: { UserProfile },
+  components: { UserProfile, Modal },
   name: "PostDetail",
   setup() {
     const md = new MarkdownIt();
@@ -71,9 +82,21 @@ export default defineComponent({
         return isHTML ? content : md.render(content);
       }
     });
+    // 判断文章的用户是否跟登陆用户一致
+    const showEditArea = computed(() => {
+      const { isLogin, _id } = store.state.user;
+      if (currentPost.value && currentPost.value.author && isLogin) {
+        const postAuthor = currentPost.value.author as UserProps;
+        return postAuthor._id === _id;
+      } else {
+        return false;
+      }
+    });
+    // console.log(showEditArea.value);
     // console.log(currentHTML.value);
     // console.log(currentPost);
     return {
+      showEditArea,
       currentPost,
       currentImageUrl,
       UserProfile,
