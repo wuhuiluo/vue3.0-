@@ -7,17 +7,17 @@
       role="alert"
     >
       <span>{{ message }}</span>
+
       <button
         @click.prevent="hide"
         type="button"
-        class="close"
+        class="close btn-close"
+        data-dismiss="modal"
         aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
   </teleport>
-</template>
+</template> 
 
 
 <script lang="ts">

@@ -30,29 +30,74 @@
           :to="{ name: 'create', query: { id: currentPost._id } }"
           >编辑</router-link
         >
-        <button type="button" class="btn btn-danger">删除</button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          @click.prevent="modalIsVisible = true"
+        >
+          删除
+        </button>
       </div>
     </article>
+    <modal
+      v-if="modalIsVisible"
+      title="删除文章"
+      :isVisible="modalIsVisible"
+      @modal-on-close="CloseModal"
+      @modal-on-confirm="HideAndDelete"
+    >
+      <p>确定要删除这篇文章吗？</p>
+    </modal>
   </div>
 </template>
 
 
 <script lang="ts">
-import Modal from "../components/Modeal.vue";
+import Modal from "../components/Modal.vue";
 import { UserProps } from "../store";
 import UserProfile from "../components/UserProfile.vue";
-import { ColumnProps, GlobalDataProps, ImageProps, PostProps } from "../store";
+import {
+  ResponseType,
+  ColumnProps,
+  GlobalDataProps,
+  ImageProps,
+  PostProps,
+} from "../store";
 import store from "../store";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { defineComponent, onMounted, computed } from "vue";
+import { defineComponent, onMounted, computed, ref } from "vue";
 import MarkdownIt from "markdown-it";
+import createMessage from "@/hooks/createMessage";
 
 export default defineComponent({
-  components: { UserProfile, Modal },
   name: "PostDetail",
+  components: {
+    UserProfile,
+    Modal,
+  },
   setup() {
+    const modalIsVisible = ref(false);
     const md = new MarkdownIt();
+    const CloseModal = () => {
+      modalIsVisible.value = false;
+    };
+    const HideAndDelete = () => {
+      modalIsVisible.value = false;
+      store
+        .dispatch("deletePost", currentId)
+        .then((res: ResponseType<PostProps>) => {
+          createMessage('文章删除成功','success')
+          setTimeout(() => {
+              router.push({
+                name: 'column',
+                params: {
+                  id: res.data.column
+                }
+              })
+          },2000)
+        });
+    };
     // console.log(md);
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
@@ -96,11 +141,14 @@ export default defineComponent({
     // console.log(currentHTML.value);
     // console.log(currentPost);
     return {
+      modalIsVisible,
       showEditArea,
       currentPost,
       currentImageUrl,
       UserProfile,
       currentHTML,
+      CloseModal,
+      HideAndDelete,
     };
   },
 });

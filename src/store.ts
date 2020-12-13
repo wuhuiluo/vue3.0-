@@ -97,7 +97,10 @@ const store = createStore<GlobalDataProps>({
         }
     },
     mutations: {
-        updatePost(state, { data } ) {
+        deletePost(state, { data }) {
+            delete state.posts.data[data._id]
+        },
+        updatePost(state, { data }) {
             console.log(data._id);
             state.posts.data[data._id] = data
         },
@@ -166,6 +169,12 @@ const store = createStore<GlobalDataProps>({
         }
     },
     actions: {
+        deletePost({ commit }, id) {
+            return asyncAndCommit(`/api/api/posts/${id}`, 'deletePost', commit, {
+                method: 'delete'
+            })
+        },
+
         updatePost({ commit }, { id, payload }) {
             return asyncAndCommit(`/api/api/posts/${id}`, 'updatePost', commit, {
                 method: 'patch',
