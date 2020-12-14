@@ -24,10 +24,14 @@
               ><a href="#" class="dropdown-item">编辑资料</a></drop-down-item
             >
             <drop-down-item>
-              <router-link class="dropdown-item" :to="`/columns/${user.column}`">我的专栏</router-link>
+              <router-link class="dropdown-item" :to="`/columns/${user.column}`"
+                >我的专栏</router-link
+              >
             </drop-down-item>
             <drop-down-item
-              ><a href="#" class="dropdown-item">退出登陆</a></drop-down-item
+              ><a href="#" class="dropdown-item" @click="logout"
+                >退出登陆</a
+              ></drop-down-item
             >
           </drop-down>
         </li>
@@ -36,10 +40,13 @@
   </nav>
 </template>
 <script lang="ts">
+import { useRouter } from "vue-router";
+import createMessage from "../hooks/createMessage";
+import { useStore } from "vuex";
 import { defineComponent, PropType } from "vue";
 import DropDownItem from "./DropDownItem.vue";
 import DropDown from "./DropDown.vue";
-import { UserProps } from "../store";
+import { UserProps, GlobalDataProps } from "../store";
 export default defineComponent({
   name: "GlobalHeader",
   components: {
@@ -51,6 +58,17 @@ export default defineComponent({
       type: Object as PropType<UserProps>,
       required: true,
     },
+  },
+  setup() {
+    const router = useRouter();
+    const store = useStore<GlobalDataProps>();
+    const logout = () => {
+      store.commit("logout");
+      createMessage("您已经退出登陆", "success");
+    };
+    return {
+      logout,
+    };
   },
 });
 </script>

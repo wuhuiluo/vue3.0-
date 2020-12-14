@@ -56,10 +56,12 @@ export interface GlobalDataProps {
     error: GlobalErrorProps;
     loading: boolean;
     columns: {
-        data: ListProps<ColumnProps>
+        data: ListProps<ColumnProps>;
+        isLoaded?: boolean;
     };
     posts: {
-        data: ListProps<PostProps>
+        data: ListProps<PostProps>;
+        loadedColumns?: string[];
     };
     user: UserProps;
 }
@@ -78,9 +80,13 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
     return data
 }
 
-const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig) => {
+const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig, extraData?: any) => {
     const { data } = await axios(url, config)
-    commit(mutationName, data)
+    if (extraData) {
+        commit(mutationName, { data, extraData })
+    } else {
+        commit(mutationName, data)
+    }
     return data
 }
 const store = createStore<GlobalDataProps>({
@@ -90,8 +96,8 @@ const store = createStore<GlobalDataProps>({
         },
         token: localStorage.getItem('token') || '',
         loading: false,
-        columns: { data: {} },
-        posts: { data: {} },
+        columns: { data: {}, isLoaded: false },
+        posts: { data: {}, loadedColumns: [] },
         user: {
             isLogin: false,
         }
@@ -112,6 +118,7 @@ const store = createStore<GlobalDataProps>({
             state.columns = {
                 data: { ...data, ...arrToObj(list) }
             }
+            state.columns.isLoaded = true
             // console.log(state.columns.data);
             // state.columns = rawData.data.list
         },
@@ -120,7 +127,7 @@ const store = createStore<GlobalDataProps>({
             // console.log(state.columns.data[rawData.data._id]);
             //    console.log(rawData);
         },
-        fetchPosts(state, rawData) {
+        fetchPosts(state, { data: rawData, extraData: columnId }) {
             const { data } = state.posts
             const { list, count, currentPage } = rawData.data
             state.posts = {
@@ -150,6 +157,9 @@ const store = createStore<GlobalDataProps>({
         },
         logout(state) {
             state.token = ''
+            state.user = {
+                isLogin: false
+            }
             localStorage.removeItem('token')
             delete axios.defaults.headers.common.Authorization
         },
@@ -181,8 +191,10 @@ const store = createStore<GlobalDataProps>({
                 data: payload
             })
         },
-        fetchColumns({ commit }) {
-            return getAndCommit('/api/api/columns', 'fetchColumns', commit)
+        fetchColumns({ state, commit }) {
+            if (!state.columns.isLoaded) {
+                return getAndCommit('/api/api/columns', 'fetchColumns', commit)
+            }
             // const { data } = await axios.get('/api/api/columns')
             // commit('fetchColumns', data)
         },
@@ -195,8 +207,10 @@ const store = createStore<GlobalDataProps>({
             // const { data } = await axios.get('/api/api/columns/' + cid)
             // commit('fetchColumn', data)
         },
-        fetchPosts({ commit }, cid) {
-            return getAndCommit(`/api/api/columns/${cid}/posts`, 'fetchPosts', commit)
+        fetchPosts({ state, commit }, cid) {
+            return asyncAndCommit(`/api/api/columns/${cid}/posts`, 'fetchPosts', commit, {
+                method: 'get'
+            }, cid)
             // const { data } = await axios.get(`/api/api/columns/${cid}/posts`)
             // commit('fetchPosts', data)
         },

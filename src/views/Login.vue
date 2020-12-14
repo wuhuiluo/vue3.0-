@@ -20,10 +20,10 @@
         ></validate-input>
       </div>
       <div class="form-text">
-          <a href="/signup" class="">还没有账户？去注册一个新的吧！</a>
-        </div>
+        <a href="/register" class="">还没有账户？去注册一个新的吧！</a>
+      </div>
       <template #submit>
-        <span class="btn btn-primary">Submit</span>
+        <span class="ml btn btn-primary">登陆</span>
       </template>
     </validate-form>
   </div>
@@ -47,8 +47,8 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
     // console.log(router);
-    const emailValue = ref("51042634@qq.com");
-    const passwordValue = ref("123456");
+    const emailValue = ref("");
+    const passwordValue = ref("");
     const passwordRules: RulesProp = [
       { type: "required", message: "密码不能为空" },
     ];
@@ -98,5 +98,9 @@ export default defineComponent({
 .btn-block {
   width: 100%;
   display: block;
+}
+.ml {
+  margin-top: 20px;
+  margin-left: 130px;
 }
 </style>
