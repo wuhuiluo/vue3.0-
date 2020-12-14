@@ -58,6 +58,7 @@ export interface GlobalDataProps {
     columns: {
         data: ListProps<ColumnProps>;
         isLoaded?: boolean;
+        total: number;
     };
     posts: {
         data: ListProps<PostProps>;
@@ -96,7 +97,7 @@ const store = createStore<GlobalDataProps>({
         },
         token: localStorage.getItem('token') || '',
         loading: false,
-        columns: { data: {}, isLoaded: false },
+        columns: { data: {}, isLoaded: false, total: 0 },
         posts: { data: {}, loadedColumns: [] },
         user: {
             isLogin: false,
@@ -113,12 +114,14 @@ const store = createStore<GlobalDataProps>({
         fetchColumns(state, rawData) {
             // console.log(state.columns);
             const { data } = state.columns
-            const { list, count, currentPage } = rawData.data
+            const { list, count } = rawData.data
             // console.log(list, count, currentPage);
             state.columns = {
-                data: { ...data, ...arrToObj(list) }
+                data: { ...data, ...arrToObj(list) },
+                total: count,
+                isLoaded: true
             }
-            state.columns.isLoaded = true
+            // state.columns.isLoaded = true
             // console.log(state.columns.data);
             // state.columns = rawData.data.list
         },
@@ -191,10 +194,14 @@ const store = createStore<GlobalDataProps>({
                 data: payload
             })
         },
-        fetchColumns({ state, commit }) {
-            if (!state.columns.isLoaded) {
-                return getAndCommit('/api/api/columns', 'fetchColumns', commit)
-            }
+        fetchColumns({ state, commit }, params = {}) {
+            const { currentPage = 1, pageSize = 6 } = params
+            // if (!state.columns.isLoaded) {
+            //     return getAndCommit('/api/api/columns', 'fetchColumns', commit)
+            // }
+            return asyncAndCommit(`/api/api/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit, {
+                method: "get"
+            })
             // const { data } = await axios.get('/api/api/columns')
             // commit('fetchColumns', data)
         },

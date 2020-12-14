@@ -13,7 +13,9 @@
               class="rounded-lg w-100"
             />
           </div>
-          <p :class="{ 'col-9': post.image }">{{ post.excerpt }}</p>
+          <p :class="{ 'col-9': post.image }" class="text-muted">
+            {{ post.excerpt }}
+          </p>
         </div>
         <span class="text-muted">{{ post.createdAt }}</span>
       </div>
@@ -55,9 +57,9 @@ export default defineComponent({
 <style>
 .post-list h4 a {
   text-decoration: none;
-  color:#1a1a1a;
+  color: #1a1a1a;
 }
 .post-list h4 a:hover {
-  color:#0d6efd;
+  color: #0d6efd;
 }
 </style>

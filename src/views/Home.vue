@@ -6,16 +6,26 @@
           <img src="../assets/callout.svg" alt="callout" class="w-50" />
           <h2 class="font-weight-light">随心写作，自由表达</h2>
           <p>
-            <router-link to="/create" class="btn btn-primary my-2">开始写文章</router-link>
+            <router-link to="/create" class="btn btn-primary my-2"
+              >开始写文章</router-link
+            >
           </p>
         </div>
       </div>
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
     <column-list :list="list"></column-list>
+    <button
+      v-if="!isLastPage"
+      @click="loadMorePage"
+      class="btn btn-modify btn-outline-primary mt-2 mb-5 btn-block w-25 load-more"
+    >
+      加载更多
+    </button>
   </div>
 </template>
 <script lang="ts">
+import useLoadMore from "../hooks/useLoadMore";
 import { GlobalDataProps } from "../store";
 import { useStore } from "vuex";
 import ColumnList from "../components/ColumnList.vue";
@@ -27,14 +37,29 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<GlobalDataProps>();
+    const total = computed(() => store.state.columns.total);
     onMounted(() => {
-      store.dispatch("fetchColumns");
+      store.dispatch("fetchColumns", { pageSize: 3 });
     });
+    console.log(total);
+    const { loadMorePage, isLastPage } = useLoadMore("fetchColumns", total, {
+      currentPage: 2,
+      pageSize: 3,
+    });
+    // console.log(isLastPage.value);
     const list = computed(() => store.getters.getColumns);
     // console.log(list);
     return {
-      list
+      total,
+      list,
+      loadMorePage,
+      isLastPage,
     };
   },
 });
 </script>
+<style>
+.btn-modify {
+  margin-left: 480px !important;
+}
+</style>
