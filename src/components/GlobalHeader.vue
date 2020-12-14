@@ -67,6 +67,7 @@ export default defineComponent({
     const logout = () => {
       store.commit("logout");
       createMessage("您已经退出登陆", "success");
+      router.push('/')
     };
     return {
       logout,

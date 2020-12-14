@@ -1,10 +1,18 @@
 module.exports = {
+    chainWebpack: config => {
+        config
+            .plugin('html')
+            .tap(args => {
+                args[0].title = '帅气专栏'
+                return args
+            })
+    },
     devServer: {
         open: true,
         host: 'localhost',
         port: 8080,
         https: false,
-        disableHostCheck: true,
+        // disableHostCheck: true,
         //以上的ip和端口是我们本机的;下面为需要跨域的
         proxy: { //配置跨域
             '/api': {

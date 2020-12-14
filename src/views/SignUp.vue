@@ -1,6 +1,6 @@
 <template>
   <div class="signup-page mx-auto p-3 w-330">
-    <h5 class="my-4 text-center">注册者也账户</h5>
+    <h5 class="my-4 text-center">注册帅气账户</h5>
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
@@ -37,6 +37,9 @@
           :rules="repeatPasswordRules"
           v-model="formData.repeatPassword"
         />
+        <div class="form-text">
+          <a href="/login" class="">已经有账户了？去登录</a>
+        </div>
       </div>
       <template #submit>
         <button type="submit" class="btn btn-primary btn-block btn-large">
@@ -48,6 +51,7 @@
 </template>
 
 <script lang="ts">
+import { useStore } from "vuex";
 import { defineComponent, reactive } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
@@ -62,6 +66,7 @@ export default defineComponent({
     ValidateForm,
   },
   setup() {
+    const store = useStore();
     const formData = reactive({
       email: "",
       nickName: "",
@@ -96,13 +101,12 @@ export default defineComponent({
           password: formData.password,
           nickName: formData.nickName,
         };
-        axios
-          .post("/api/api/users", payload)
+        store
+          .dispatch("register", payload)
           .then((res) => {
-            console.log(res);
             createMessage("注册成功,正在跳转登陆页", "success");
             setTimeout(() => {
-              router.push('/login')
+              router.push("/login");
             }, 2000);
           })
           .catch((e) => {

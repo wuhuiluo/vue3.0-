@@ -43,47 +43,90 @@ const router = createRouter({
             name: 'create',
             component: CreatePost,
             meta: {
-                requireLogin: true
+                requiredLogin: true
             }
         }
     ]
 })
-
+// 路由前置守卫
 router.beforeEach((to, from, next) => {
-    const { user, token } = store.state;
-    const { requiredLogin, redirectAlreadyLogin } = to.meta;
+    // 第一版本 没有验证 token
+    // 是否需要 Login 且 没有登录
+    // if (to.meta.requiredLogin && !store.state.user.isLogin) {
+    //   next({ name: 'login' })
+    // } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {
+    //   next({ name: 'home' })
+    // } else {
+    //   next()
+    // }
+    const { user, token } = store.state
+    const { requiredLogin, redirectAlreadyLogin } = to.meta
     if (!user.isLogin) {
-        if (token) {
-            axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-            store
-                .dispatch("fetchCurrentUser")
-                .then(() => {
-                    if (redirectAlreadyLogin) {
-                        next("/");
-                    } else {
-                        next();
-                    }
-                })
-                .catch(e => {
-                    console.error(e);
-                    store.commit("logout");
-                    next("login");
-                });
+      // 没有登录
+      if (token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`
+        store.dispatch('fetchCurrentUser').then(() => {
+          if (redirectAlreadyLogin) {
+            next('/')
+          } else {
+            next()
+          }
+        }).catch(err => {
+          console.log(err)
+          store.commit('logout')
+          next('login')
+        })
+      } else {
+        if (requiredLogin) {
+          next('login')
         } else {
-            if (requiredLogin) {
-                next("login");
-            } else {
-                next();
-            }
+          next()
         }
+      }
     } else {
-        if (redirectAlreadyLogin) {
-            next("/");
-        } else {
-            next();
-        }
+      // 已经登录
+      if (redirectAlreadyLogin) {
+        next('/')
+      } else {
+        next()
+      }
     }
-});
+  })
+// router.beforeEach((to, from, next) => {
+//     const { user, token } = store.state;
+//     const { requiredLogin, redirectAlreadyLogin } = to.meta;
+//     if (!user.isLogin) {
+//         if (token) {
+//             axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+//             store
+//                 .dispatch("fetchCurrentUser")
+//                 .then(() => {
+//                     if (redirectAlreadyLogin) {
+//                         next("/");
+//                     } else {
+//                         next();
+//                     }
+//                 })
+//                 .catch(e => {
+//                     console.error(e);
+//                     store.commit("logout");
+//                     next("login");
+//                 });
+//         } else {
+//             if (requiredLogin) {
+//                 next("login");
+//             } else {
+//                 next();
+//             }
+//         }
+//     } else {
+//         if (redirectAlreadyLogin) {
+//             next("/");
+//         } else {
+//             next();
+//         }
+//     }
+// });
 // router.beforeEach((to, from, next) => {
 //     const { user, token } = store.state
 //     const { requireLogin, redirectAlreadyLogin } = to.meta

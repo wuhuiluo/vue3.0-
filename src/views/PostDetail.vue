@@ -1,5 +1,16 @@
 <template>
   <div v-if="currentPost" class="modify-height post-detail-page w-690">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">首页</a></li>
+        <li class="breadcrumb-item">
+          <a :href="`/columns/${currentPost.column}`">专栏首页</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ currentPost.title }}
+        </li>
+      </ol>
+    </nav>
     <article class="mb-5 pb-3">
       <img
         class="rounded-lg img-fluid my-4"
@@ -87,15 +98,15 @@ export default defineComponent({
       store
         .dispatch("deletePost", currentId)
         .then((res: ResponseType<PostProps>) => {
-          createMessage('文章删除成功','success')
+          createMessage("文章删除成功", "success");
           setTimeout(() => {
-              router.push({
-                name: 'column',
-                params: {
-                  id: res.data.column
-                }
-              })
-          },2000)
+            router.push({
+              name: "column",
+              params: {
+                id: res.data.column,
+              },
+            });
+          }, 2000);
         });
     };
     // console.log(md);

@@ -237,6 +237,9 @@ const store = createStore<GlobalDataProps>({
             return dispatch('login', loginData).then(() => {
                 return dispatch('fetchCurrentUser')
             })
+        },
+        register({ commit }, payload) {
+            return asyncAndCommit('/api/api/users', 'register', commit, { method: 'post', data: payload })
         }
     },
     getters: {
